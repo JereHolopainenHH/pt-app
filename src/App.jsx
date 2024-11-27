@@ -1,38 +1,21 @@
-import { useEffect } from "react"
-import { getCustomers, updateCustomer } from "./api/customers"
-import { resetDatabase } from "./api/reset";
+import { Routes, Route } from "react-router";
+
+import Dashboard from "./components/Dashboard";
+import CustomerList from "./components/CustomerList";
+import TrainingList from "./components/TrainingList";
+import Navigation from "./components/Navigation";
 
 function App() {
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const customers = await getCustomers();
-      console.log(customers);
-    }
-    fetchData();
-  }, []);
-
-  const updateCustomerHandler = async () => {
-    const updatedCustomer = {
-      firstname: "John - updated",
-      lastname: "Johnson - updated",
-      streetaddress: "5th Street - updated",
-      postcode: "23110 - updated",
-      city: "Flintsone - updated",
-      email: "john@mail.com - updated",
-      phone: "232-2345540 - updated",
-    }
-
-    const updatedCustomerResponse = await updateCustomer(3049, updatedCustomer);
-    console.log(updatedCustomerResponse);
-  }
-
   return (
-    <>
-      <button onClick={resetDatabase}>Reset Database</button>
-      <button onClick={updateCustomerHandler}>Update Customer</button>
-    </>
+    <div>
+      <Navigation />
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/customers" element={<CustomerList />} />
+        <Route path="/trainings" element={<TrainingList />} />
+      </Routes>
+    </div>
   )
 }
 
-export default App
+export default App;
