@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
-import { TextField, Button, Box, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
+import { Button, Box, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { createTraining } from '../api/trainings';
 import { useAlert } from './AlertProvider';
 import { getUniqueCustomersFromTrainings } from '../utils/trainingUtils';
 import { formatCustomerHref, formatTrainingResponse } from '../utils/trainingUtils';
-import CustomTextField from './CustomTextField';
+import FormFields from './FormFields';
 
 function CreateTrainingForm({ handleClose, setTrainings, trainings }) {
     const { showAlert } = useAlert();
     const [customers, setCustomers] = useState([]);
-    const [training, setTraining] = useState({
+    const [formData, setFormData] = useState({
         date: dayjs(new Date()).toISOString(),
         activity: '',
         duration: '',
@@ -23,8 +23,8 @@ function CreateTrainingForm({ handleClose, setTrainings, trainings }) {
             const uniqueCustomers = getUniqueCustomersFromTrainings(trainings);
             setCustomers(uniqueCustomers);
             if (uniqueCustomers.length > 0) {
-                setTraining((prevTraining) => ({
-                    ...prevTraining,
+                setFormData((prev) => ({
+                    ...prev,
                     customerHref: formatCustomerHref(uniqueCustomers[0].id)
                 }));
             }
@@ -34,22 +34,22 @@ function CreateTrainingForm({ handleClose, setTrainings, trainings }) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setTraining({ ...training, [name]: value });
+        setFormData(prev => ({ ...prev, [name]: value }));
     }
 
     const handleDateChange = (newValue) => {
-        setTraining({ ...training, date: newValue.toIsoString() });
+        setFormData(prev => ({ ...prev, date: newValue.toISOString() }));
     }
 
     const handleCustomerChange = (e) => {
-        setTraining({ ...training, customerHref: e.target.value });
+        setFormData(prev => ({ ...prev, customerHref: e.target.value }));
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await createTraining(training);
-            const customerId = training.customerHref.split('/').pop();
+            const response = await createTraining(formData);
+            const customerId = formData.customerHref.split('/').pop();
             const customer = customers.find(customer => customer.id === parseInt(customerId));
             const formattedResponse = formatTrainingResponse(response, customer);
             setTrainings((prevTrainings) => [formattedResponse, ...prevTrainings]);
@@ -73,7 +73,7 @@ function CreateTrainingForm({ handleClose, setTrainings, trainings }) {
                     <Select
                         labelId="customer-label"
                         id="customer"
-                        value={training.customerHref}
+                        value={formData.customerHref}
                         label="Customer"
                         onChange={handleCustomerChange}
                         required
@@ -88,25 +88,14 @@ function CreateTrainingForm({ handleClose, setTrainings, trainings }) {
             </Box>
             <DateTimePicker
                 label="Date"
-                value={dayjs(training.date)}
+                value={dayjs(formData.date)}
                 onChange={handleDateChange}
                 format='DD/MM/YYYY HH:mm'
                 ampm={false}
                 sx={{ mb: 2, width: '100%' }}
                 required
             />
-            {
-                fields.map((field) => (
-                    <CustomTextField
-                        key={field.name}
-                        label={field.label}
-                        name={field.name}
-                        value={training[field.name]}
-                        onChange={handleChange}
-                        required
-                    />
-                ))
-            }
+            <FormFields fields={fields} formData={formData} handleChange={handleChange} />
             <Button
                 type="submit"
                 variant="contained"

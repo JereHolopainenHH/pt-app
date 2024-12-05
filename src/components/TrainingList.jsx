@@ -29,7 +29,6 @@ function TrainingList({ trainings, setTrainings, isLoading }) {
             field: 'actions',
             cellRenderer: (params) => {
                 const onDelete = () => handleOpenDelete(params.data);
-
                 return (
                     <Button onClick={onDelete} variant="contained" color="error">
                         <DeleteIcon />
@@ -43,7 +42,8 @@ function TrainingList({ trainings, setTrainings, isLoading }) {
             field: 'customer',
             filter: 'agTextColumnFilter',
             floatingFilter: true,
-            valueFormatter: (data) => data.value.firstname + ' ' + data.value.lastname
+            valueFormatter: (data) => data?.value && data.value.firstname + ' ' + data.value.lastname
+         
         },
         {
             field: 'date',

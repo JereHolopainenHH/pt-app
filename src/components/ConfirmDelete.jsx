@@ -15,8 +15,6 @@ function ConfirmDelete({ handleClose, item, setItems, deleteItem, itemType }) {
         setError('');
     };
 
-    console.log("item", item);
-
     const handleConfirmClick = async () => {
         if (inputValue.toLowerCase() === confirmText.toLowerCase()) {
             try {

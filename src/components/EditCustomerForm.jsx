@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@mui/material';
 import { editCustomer } from '../api/customers';
 import { useAlert } from './AlertProvider';
-import CustomTextField from './CustomTextField';
+import FormFields from './FormFields';
 
 function EditCustomerForm({ handleClose, customer, setCustomers }) {
     const { showAlert } = useAlert();
@@ -61,17 +61,7 @@ function EditCustomerForm({ handleClose, customer, setCustomers }) {
 
     return (
         <form onSubmit={handleSubmit}>
-            {fields.map((field) => (
-                <CustomTextField
-                    key={field.name}
-                    label={field.label}
-                    name={field.name}
-                    type={field.type || 'text'}
-                    value={formData[field.name] || ''}
-                    onChange={handleChange}
-                    required={false}
-                />
-            ))}
+            <FormFields fields={fields} formData={formData} handleChange={handleChange} />
             <Button type="submit" variant="contained" color="primary">
                 Edit
             </Button>

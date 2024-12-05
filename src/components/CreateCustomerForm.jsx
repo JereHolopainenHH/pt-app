@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@mui/material';
 import { createCustomer } from '../api/customers';
 import { useAlert } from './AlertProvider';
-import CustomTextField from './CustomTextField';
+import FormFields from './FormFields';
 
 function CreateCustomerForm({ handleClose, setCustomers }) {
     const { showAlert } = useAlert();
@@ -46,16 +46,7 @@ function CreateCustomerForm({ handleClose, setCustomers }) {
 
     return (
         <form onSubmit={handleSubmit}>
-            {fields.map((field) => (
-                <CustomTextField
-                    key={field.name}
-                    label={field.label}
-                    name={field.name}
-                    type={field.type || 'text'}
-                    value={formData[field.name]}
-                    onChange={handleChange}
-                />
-            ))}
+            <FormFields fields={fields} formData={formData} handleChange={handleChange} />
             <Button type="submit" variant="contained" color="primary">
                 Create
             </Button>
