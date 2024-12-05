@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-
 import { Routes, Route } from "react-router";
-
 import CustomerList from "./components/CustomerList";
 import TrainingList from "./components/TrainingList";
 import Navigation from "./components/Navigation";
 import { useAlert } from "./components/AlertProvider";
-
 import { getCustomers } from './api/customers';
 import { getTrainingsWithCustomerInfo } from './api/trainings';
 import { resetDatabase } from "./api/resetdb";
@@ -17,7 +14,6 @@ function App() {
   const [customers, setCustomers] = useState([]);
   const [trainings, setTrainings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
 
   useEffect(() => {
     fetchData();
@@ -57,7 +53,7 @@ function App() {
         />
         <Route
           path="/trainings"
-          element={<TrainingList trainings={trainings} setTrainings={setTrainings} isLoading={isLoading} />}
+          element={<TrainingList trainings={trainings} customers={customers} setTrainings={setTrainings} isLoading={isLoading} />}
         />
       </Routes>
     </>

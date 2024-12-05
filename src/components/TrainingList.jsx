@@ -7,7 +7,17 @@ import { Button } from '@mui/material';
 import { deleteTraining } from "../api/trainings";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 
-function TrainingList({ trainings, setTrainings, isLoading }) {
+/**
+ * TrainingList component for displaying and managing training sessions.
+ *
+ * @param {Object} props - The component props.
+ * @param {Array} props.trainings - Array of training objects.
+ * @param {Array} props.customers - Array of customer objects.
+ * @param {Function} props.setTrainings - Function to update trainings state.
+ * @param {boolean} props.isLoading - Boolean indicating whether the data is loading.
+ * @returns {JSX.Element} The TrainingList component.
+ */
+export default function TrainingList({ trainings, customers, setTrainings, isLoading }) {
     const [openCreate, setOpenCreate] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     const [selectedTraining, setSelectedTraining] = useState(null);
@@ -66,7 +76,7 @@ function TrainingList({ trainings, setTrainings, isLoading }) {
                 title: "Create new training",
                 open: openCreate,
                 handleClose: closeCreateDialog,
-                content: <CreateTrainingForm setTrainings={setTrainings} handleClose={closeCreateDialog} trainings={trainings} />
+                content: <CreateTrainingForm setTrainings={setTrainings} handleClose={closeCreateDialog} customers={customers} />
             }}
             deleteDialog={{
                 title: "Delete Training",
@@ -86,5 +96,3 @@ function TrainingList({ trainings, setTrainings, isLoading }) {
         />
     );
 }
-
-export default TrainingList;

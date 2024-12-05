@@ -29,7 +29,15 @@ const navItems = [
     }
 ]
 
-function Navigation({ window, handleReset }) {
+/**
+ * Navigation component for the app's navigation bar and drawer.
+ *
+ * @param {Object} props - The component props.
+ * @param {Function} props.window - Function to get the window object.
+ * @param {Function} props.handleReset - Function to handle database reset.
+ * @returns {JSX.Element} The Navigation component.
+ */
+export default function Navigation({ window, handleReset }) {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const handleDrawerToggle = () => {
@@ -119,6 +127,3 @@ function Navigation({ window, handleReset }) {
         </Box>
     );
 }
-
-export default Navigation;
-

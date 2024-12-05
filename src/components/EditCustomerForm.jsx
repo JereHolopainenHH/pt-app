@@ -3,9 +3,19 @@ import { Button } from '@mui/material';
 import { editCustomer } from '../api/customers';
 import { useAlert } from './AlertProvider';
 import FormFields from './FormFields';
-import { getIdFromCustomerHref } from '../utils/customerUtils';
+import { getIdFromHref } from '../utils/getIdFromHref';
 
-function EditCustomerForm({ handleClose, customer, setCustomers, setTrainings }) {
+/**
+ * EditCustomerForm component for editing an existing customer.
+ *
+ * @param {Object} props - The component props.
+ * @param {Function} props.handleClose - Function to close the form.
+ * @param {Object} props.customer - The customer object to be edited.
+ * @param {Function} props.setCustomers - Function to update customers state.
+ * @param {Function} props.setTrainings - Function to update trainings state.
+ * @returns {JSX.Element} The EditCustomerForm component.
+ */
+export default function EditCustomerForm({ handleClose, customer, setCustomers, setTrainings }) {
     const { showAlert } = useAlert();
     const [formData, setFormData] = useState({
         firstname: '',
@@ -36,7 +46,7 @@ function EditCustomerForm({ handleClose, customer, setCustomers, setTrainings })
             const response = await editCustomer(customer, formData);
             setCustomers((prevCustomers) => prevCustomers.map(c => c._links.self.href === response._links.self.href ? response : c));
             setTrainings((prevTrainings) => prevTrainings.map(t => {
-                const id = parseInt(getIdFromCustomerHref(response._links.self.href));
+                const id = parseInt(getIdFromHref(response._links.self.href));
                 return t.customer.id === id ? { ...t, customer: response } : t
             }));
             handleClose();
@@ -65,5 +75,3 @@ function EditCustomerForm({ handleClose, customer, setCustomers, setTrainings })
         </form>
     );
 }
-
-export default EditCustomerForm;

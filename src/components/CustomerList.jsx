@@ -8,7 +8,17 @@ import EditCustomerForm from './EditCustomerForm';
 import ConfirmDeleteDialog from './ConfirmDeleteDialog';
 import { deleteCustomer } from '../api/customers';
 
-function CustomerList({ customers, setCustomers, setTrainings, isLoading }) {
+/**
+ * CustomerList component for displaying and managing customers.
+ *
+ * @param {Object} props - The component props.
+ * @param {Array} props.customers - Array of customer objects.
+ * @param {Function} props.setCustomers - Function to update customers state.
+ * @param {Function} props.setTrainings - Function to update trainings state.
+ * @param {boolean} props.isLoading - Boolean indicating whether the data is loading.
+ * @returns {JSX.Element} The CustomerList component.
+ */
+export default function CustomerList({ customers, setCustomers, setTrainings, isLoading }) {
     const [openCreate, setOpenCreate] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
@@ -100,5 +110,3 @@ function CustomerList({ customers, setCustomers, setTrainings, isLoading }) {
         />
     );
 }
-
-export default CustomerList;

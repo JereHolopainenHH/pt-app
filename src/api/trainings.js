@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { getApiUrl } from '../utils/apiUtils';
+import { getApiUrl } from '../utils/getApiUrl';
+import { getHref } from '../utils/getHref';
+import { getIdFromHref } from '../utils/getIdFromHref';
 
 /**
  * Retrieves all training sessions.
@@ -55,7 +57,7 @@ export const createTraining = async (training) => {
         });
         const formattedResponse = {
             ...response.data,
-            id: response.data._links.self.href.split('/').pop()
+            id: parseInt(getIdFromHref(getHref(response.data)))
         };
         return formattedResponse;
     } catch (error) {

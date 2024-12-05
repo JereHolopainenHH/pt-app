@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-import { getApiUrl } from '../utils/apiUtils';
+import { getApiUrl } from '../utils/getApiUrl';
+import { getHref } from '../utils/getHref';
 
 /**
  * Retrieves all customers from the API.
@@ -70,7 +70,7 @@ export const createCustomer = async (customer) => {
  */
 export const editCustomer = async (customer, formData) => {
     try {
-        const response = await axios.put(customer._links.self.href, formData, {
+        const response = await axios.put(getHref(customer), formData, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -85,14 +85,14 @@ export const editCustomer = async (customer, formData) => {
 /**
  * Deletes a specific customer by using the customer object.
  *
- * @param {Object} customer - The customer object containing the '_links.self.href' to identify the customer to be deleted.
+ * @param {Object} customerHref -- The customer's '_links.self.href' property.
  * @returns {Promise<Object>} A promise that resolves to the response after deletion.
  * For detailed response structure, see the documentation.
  * @see https://juhahinkula.github.io/personaltrainerdocs/customers/
  */
-export const deleteCustomer = async (customer) => {
+export const deleteCustomer = async (customerHref) => {
     try {
-        const response = await axios.delete(customer._links.self.href);
+        const response = await axios.delete(customerHref);
         return response.data;
     } catch (error) {
         console.error(error);

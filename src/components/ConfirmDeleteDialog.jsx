@@ -1,9 +1,22 @@
 import { useState, useEffect } from 'react';
 import { Button, TextField, DialogActions, Typography } from '@mui/material';
 import { useAlert } from './AlertProvider';
-import { getIdFromCustomerHref } from '../utils/customerUtils';
+import { getIdFromHref } from '../utils/getIdFromHref';
+import { getHref } from '../utils/getHref';
 
-function ConfirmDeleteDialog({ handleClose, item, setCustomers, setTrainings, deleteItem, itemType }) {
+/**
+ * ConfirmDeleteDialog component for confirming deletion of customers or trainings.
+ *
+ * @param {Object} props - The component props.
+ * @param {Function} props.handleClose - Function to close the dialog.
+ * @param {Object} props.item - The item to be deleted.
+ * @param {Function} props.setCustomers - Function to update customers state.
+ * @param {Function} props.setTrainings - Function to update trainings state.
+ * @param {Function} props.deleteItem - Function to delete the item.
+ * @param {string} props.itemType - The type of item ('customer' or 'training').
+ * @returns {JSX.Element} The ConfirmDeleteDialog component.
+ */
+export default function ConfirmDeleteDialog({ handleClose, item, setCustomers, setTrainings, deleteItem, itemType }) {
     const { showAlert } = useAlert();
     const [inputValue, setInputValue] = useState('');
     const [error, setError] = useState('');
@@ -24,13 +37,15 @@ function ConfirmDeleteDialog({ handleClose, item, setCustomers, setTrainings, de
         if (inputValue.toLowerCase() === confirmText.toLowerCase()) {
             try {
                 if (itemType === 'customer') {
-                    await deleteItem(item);
-                    const id = getIdFromCustomerHref(item._links.self.href);
-                    setCustomers((prev) => prev.filter((i) => i._links.self.href !== item._links.self.href));
+                    const deleteCustomerHref = getHref(item);
+                    await deleteItem(deleteCustomerHref);
+                    setCustomers((prev) => prev.filter((customer) => getHref(customer) !== deleteCustomerHref));
+
+                    const id = getIdFromHref(deleteCustomerHref);
                     setTrainings((prev) => prev.filter((t) => t.customer.id !== parseInt(id)));
                 } else if (itemType === 'training') {
                     await deleteItem(item.id);
-                    setTrainings((prev) => prev.filter((i) => i.id !== item.id));
+                    setTrainings((prev) => prev.filter((training) => training.id !== item.id));
                 }
                 showAlert(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} deleted successfully`, 'success');
                 handleClose();
@@ -70,5 +85,3 @@ function ConfirmDeleteDialog({ handleClose, item, setCustomers, setTrainings, de
         </>
     );
 }
-
-export default ConfirmDeleteDialog;
