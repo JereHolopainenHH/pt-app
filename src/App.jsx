@@ -53,7 +53,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<CustomerList customers={customers} setCustomers={setCustomers} isLoading={isLoading} />}
+          element={<CustomerList customers={customers} setCustomers={setCustomers} setTrainings={setTrainings} isLoading={isLoading} />}
         />
         <Route
           path="/trainings"

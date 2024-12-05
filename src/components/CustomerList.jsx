@@ -5,10 +5,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from '@mui/material';
 import EditCustomerForm from './EditCustomerForm';
-import ConfirmDelete from './ConfirmDelete';
+import ConfirmDeleteDialog from './ConfirmDeleteDialog';
 import { deleteCustomer } from '../api/customers';
 
-function CustomerList({ customers, setCustomers, isLoading }) {
+function CustomerList({ customers, setCustomers, setTrainings, isLoading }) {
     const [openCreate, setOpenCreate] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
@@ -79,16 +79,18 @@ function CustomerList({ customers, setCustomers, isLoading }) {
                     handleClose={handleCloseEdit}
                     customer={selectedCustomer}
                     setCustomers={setCustomers}
+                    setTrainings={setTrainings}
                 />
             }}
             deleteDialog={{
                 title: "Delete Customer",
                 open: openDelete,
                 handleClose: handleCloseDelete,
-                content: <ConfirmDelete
+                content: <ConfirmDeleteDialog
                     handleClose={handleCloseDelete}
                     item={selectedCustomer}
-                    setItems={setCustomers}
+                    setCustomers={setCustomers}
+                    setTrainings={setTrainings}
                     deleteItem={deleteCustomer}
                     itemType="customer"
                 />

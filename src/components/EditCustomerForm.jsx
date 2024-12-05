@@ -3,8 +3,9 @@ import { Button } from '@mui/material';
 import { editCustomer } from '../api/customers';
 import { useAlert } from './AlertProvider';
 import FormFields from './FormFields';
+import { getIdFromCustomerHref } from '../utils/customerUtils';
 
-function EditCustomerForm({ handleClose, customer, setCustomers }) {
+function EditCustomerForm({ handleClose, customer, setCustomers, setTrainings }) {
     const { showAlert } = useAlert();
     const [formData, setFormData] = useState({
         firstname: '',
@@ -17,15 +18,7 @@ function EditCustomerForm({ handleClose, customer, setCustomers }) {
     });
 
     useEffect(() => {
-        setFormData({
-            firstname: customer.firstname,
-            lastname: customer.lastname,
-            email: customer.email,
-            phone: customer.phone,
-            streetaddress: customer.streetaddress,
-            postcode: customer.postcode,
-            city: customer.city
-        });
+        setFormData({ ...customer });
     }, [customer]);
 
     const handleChange = (e) => {
@@ -42,6 +35,10 @@ function EditCustomerForm({ handleClose, customer, setCustomers }) {
             }
             const response = await editCustomer(customer, formData);
             setCustomers((prevCustomers) => prevCustomers.map(c => c._links.self.href === response._links.self.href ? response : c));
+            setTrainings((prevTrainings) => prevTrainings.map(t => {
+                const id = parseInt(getIdFromCustomerHref(response._links.self.href));
+                return t.customer.id === id ? { ...t, customer: response } : t
+            }));
             handleClose();
             showAlert('Customer updated successfully', 'success');
         } catch (error) {

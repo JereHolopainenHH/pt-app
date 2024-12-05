@@ -5,30 +5,30 @@ import ListLayout from './ListLayout';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from '@mui/material';
 import { deleteTraining } from "../api/trainings";
-import ConfirmDelete from "./ConfirmDelete";
+import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 
 function TrainingList({ trainings, setTrainings, isLoading }) {
     const [openCreate, setOpenCreate] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     const [selectedTraining, setSelectedTraining] = useState(null);
 
-    const handleOpenCreate = () => setOpenCreate(true);
-    const handleCloseCreate = () => setOpenCreate(false);
+    const openCreateDialog = () => setOpenCreate(true);
+    const closeCreateDialog = () => setOpenCreate(false);
 
-    const handleOpenDelete = (training) => {
+    const openDeleteDialog = (training) => {
         setSelectedTraining(training);
         setOpenDelete(true);
     };
-    const handleCloseDelete = () => setOpenDelete(false);
-
-    const handleConfirmDelete = () => {
-        handleCloseDelete();
+    const closeDeleteDialog = () => {
+        setSelectedTraining(null);
+        setOpenDelete(false);
     };
+
     const [columnDefs, setColumnDefs] = useState([
         {
             field: 'actions',
             cellRenderer: (params) => {
-                const onDelete = () => handleOpenDelete(params.data);
+                const onDelete = () => openDeleteDialog(params.data);
                 return (
                     <Button onClick={onDelete} variant="contained" color="error">
                         <DeleteIcon />
@@ -43,7 +43,7 @@ function TrainingList({ trainings, setTrainings, isLoading }) {
             filter: 'agTextColumnFilter',
             floatingFilter: true,
             valueFormatter: (data) => data?.value && data.value.firstname + ' ' + data.value.lastname
-         
+
         },
         {
             field: 'date',
@@ -61,22 +61,22 @@ function TrainingList({ trainings, setTrainings, isLoading }) {
             title="Trainings"
             isLoading={isLoading}
             buttonLabel="Create new training"
-            onButtonClick={handleOpenCreate}
+            onButtonClick={openCreateDialog}
             createDialog={{
                 title: "Create new training",
                 open: openCreate,
-                handleClose: handleCloseCreate,
-                content: <CreateTrainingForm setTrainings={setTrainings} handleClose={handleCloseCreate} />
+                handleClose: closeCreateDialog,
+                content: <CreateTrainingForm setTrainings={setTrainings} handleClose={closeCreateDialog} trainings={trainings} />
             }}
             deleteDialog={{
                 title: "Delete Training",
                 open: openDelete,
-                handleClose: handleCloseDelete,
-                onConfirm: handleConfirmDelete,
-                content: <ConfirmDelete
-                    handleClose={handleCloseDelete}
+                handleClose: closeDeleteDialog,
+                onConfirm: closeDeleteDialog,
+                content: <ConfirmDeleteDialog
+                    handleClose={closeDeleteDialog}
                     item={selectedTraining}
-                    setItems={setTrainings}
+                    setTrainings={setTrainings}
                     deleteItem={deleteTraining}
                     itemType="training"
                 />

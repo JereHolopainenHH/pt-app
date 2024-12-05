@@ -4,8 +4,7 @@ import { Button, Box, InputLabel, MenuItem, FormControl, Select } from '@mui/mat
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { createTraining } from '../api/trainings';
 import { useAlert } from './AlertProvider';
-import { getUniqueCustomersFromTrainings } from '../utils/trainingUtils';
-import { formatCustomerHref, formatTrainingResponse } from '../utils/trainingUtils';
+import { formatCustomerHref, getUniqueCustomersFromTrainings, formatTrainingResponse } from '../utils/trainingUtils';
 import FormFields from './FormFields';
 
 function CreateTrainingForm({ handleClose, setTrainings, trainings }) {
@@ -15,21 +14,21 @@ function CreateTrainingForm({ handleClose, setTrainings, trainings }) {
         date: dayjs(new Date()).toISOString(),
         activity: '',
         duration: '',
-        customerHref: ''
+        customer: ''
     });
 
     useEffect(() => {
-        const fetchCustomers = () => {
+        const fetchUniqueCustomers = () => {
             const uniqueCustomers = getUniqueCustomersFromTrainings(trainings);
             setCustomers(uniqueCustomers);
             if (uniqueCustomers.length > 0) {
                 setFormData((prev) => ({
                     ...prev,
-                    customerHref: formatCustomerHref(uniqueCustomers[0].id)
+                    customer: formatCustomerHref(uniqueCustomers[0].id)
                 }));
             }
         };
-        fetchCustomers();
+        fetchUniqueCustomers();
     }, [trainings]);
 
     const handleChange = (e) => {
@@ -42,15 +41,15 @@ function CreateTrainingForm({ handleClose, setTrainings, trainings }) {
     }
 
     const handleCustomerChange = (e) => {
-        setFormData(prev => ({ ...prev, customerHref: e.target.value }));
+        setFormData(prev => ({ ...prev, customer: e.target.value }));
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response = await createTraining(formData);
-            const customerId = formData.customerHref.split('/').pop();
-            const customer = customers.find(customer => customer.id === parseInt(customerId));
+            const customerId = formData.customer.split('/').pop();
+            const customer = customers.find(customer => customer?.id === parseInt(customerId));
             const formattedResponse = formatTrainingResponse(response, customer);
             setTrainings((prevTrainings) => [formattedResponse, ...prevTrainings]);
             handleClose();
@@ -66,14 +65,14 @@ function CreateTrainingForm({ handleClose, setTrainings, trainings }) {
     ]
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete='off'>
             <Box sx={{ minWidth: 120, mb: 2 }}>
                 <FormControl fullWidth>
                     <InputLabel id="customer-label">Customer</InputLabel>
                     <Select
                         labelId="customer-label"
                         id="customer"
-                        value={formData.customerHref}
+                        value={formData.customer}
                         label="Customer"
                         onChange={handleCustomerChange}
                         required

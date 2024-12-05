@@ -53,7 +53,11 @@ export const createTraining = async (training) => {
                 'Content-Type': 'application/json'
             }
         });
-        return response.data;
+        const formattedResponse = {
+            ...response.data,
+            id: response.data._links.self.href.split('/').pop()
+        };
+        return formattedResponse;
     } catch (error) {
         console.error(error);
         return [];

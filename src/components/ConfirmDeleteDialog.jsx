@@ -1,29 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, TextField, DialogActions, Typography } from '@mui/material';
 import { useAlert } from './AlertProvider';
+import { getIdFromCustomerHref } from '../utils/customerUtils';
 
-function ConfirmDelete({ handleClose, item, setItems, deleteItem, itemType }) {
+function ConfirmDeleteDialog({ handleClose, item, setCustomers, setTrainings, deleteItem, itemType }) {
     const { showAlert } = useAlert();
-
     const [inputValue, setInputValue] = useState('');
     const [error, setError] = useState('');
+    const [confirmText, setConfirmText] = useState('');
 
-    const confirmText = itemType === 'customer' ? `${item.firstname} ${item.lastname}` : item.activity;
+    useEffect(() => {
+        if (item) {
+            setConfirmText(itemType === 'customer' ? `${item.firstname} ${item.lastname}` : item.activity);
+        }
+    }, [item, itemType]);
 
     const handleChange = (e) => {
         setInputValue(e.target.value);
         setError('');
     };
 
-    const handleConfirmClick = async () => {
+    const confirmDeletion = async () => {
         if (inputValue.toLowerCase() === confirmText.toLowerCase()) {
             try {
                 if (itemType === 'customer') {
                     await deleteItem(item);
-                    setItems((prev) => prev.filter((i) => i._links.self.href !== item._links.self.href));
+                    const id = getIdFromCustomerHref(item._links.self.href);
+                    setCustomers((prev) => prev.filter((i) => i._links.self.href !== item._links.self.href));
+                    setTrainings((prev) => prev.filter((t) => t.customer.id !== parseInt(id)));
                 } else if (itemType === 'training') {
                     await deleteItem(item.id);
-                    setItems((prev) => prev.filter((i) => i.id !== item.id));
+                    setTrainings((prev) => prev.filter((i) => i.id !== item.id));
                 }
                 showAlert(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} deleted successfully`, 'success');
                 handleClose();
@@ -56,7 +63,7 @@ function ConfirmDelete({ handleClose, item, setItems, deleteItem, itemType }) {
                 <Button onClick={handleClose} color="primary">
                     Cancel
                 </Button>
-                <Button onClick={handleConfirmClick} color="primary">
+                <Button onClick={confirmDeletion} color="primary">
                     Confirm
                 </Button>
             </DialogActions>
@@ -64,4 +71,4 @@ function ConfirmDelete({ handleClose, item, setItems, deleteItem, itemType }) {
     );
 }
 
-export default ConfirmDelete;
+export default ConfirmDeleteDialog;
