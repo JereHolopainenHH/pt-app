@@ -1,38 +1,8 @@
-// react imports
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import CreateCustomerForm from './CreateCustomerForm';
+import ListLayout from './ListLayout';
 
-// material ui imports
-import { Box, Typography } from '@mui/material';
-
-// ag-grid imports
-import { AgGridReact } from 'ag-grid-react';
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
-
-// api function imports
-import { getCustomers } from '../api/customers';
-
-function CustomerList() {
-    // states
-    const [customers, setCustomers] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    // fetch customers from the backend when the component is rendered
-    useEffect(() => {
-        const fetchCustomers = async () => {
-            try {
-                const data = await getCustomers(); // fetch customers from the backend
-                setCustomers(data._embedded.customers); // set the customers to the state
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        fetchCustomers();
-    }, []);
-
-    // column defs
+function CustomerList({ customers, setCustomers, isLoading }) {
     const [columnDefs, setColumnDefs] = useState([
         { field: 'firstname', filter: 'agTextColumnFilter', floatingFilter: true },
         { field: 'lastname', filter: 'agTextColumnFilter', floatingFilter: true },
@@ -43,22 +13,24 @@ function CustomerList() {
         { field: 'phone', filter: 'agTextColumnFilter', floatingFilter: true }
     ]);
 
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
     return (
-        <div>
-            <Typography variant="h4" sx={{ my: 2 }}>
-                Customer List
-            </Typography>
-            {isLoading && <Typography>Loading...</Typography>}
-            {!isLoading &&
-                <div className="ag-theme-alpine" style={{ height: 400, widht: '100%' }}>
-                    <AgGridReact
-                        rowData={customers}
-                        columnDefs={columnDefs}
-                    />
-                </div>
-            }
-        </div>
-    )
+        <ListLayout
+            title="Customer List"
+            isLoading={isLoading}
+            buttonLabel="Create new customer"
+            onButtonClick={handleOpen}
+            dialogTitle="Create new customer"
+            dialogOpen={open}
+            handleDialogClose={handleClose}
+            dialogContent={<CreateCustomerForm setCustomers={setCustomers} handleClose={handleClose} />}
+            rowData={customers}
+            columnDefs={columnDefs}
+        />
+    );
 }
 
 export default CustomerList;
