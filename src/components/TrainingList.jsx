@@ -2,29 +2,42 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import CreateTrainingForm from "./CreateTrainingForm";
 import ListLayout from './ListLayout';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from '@mui/material';
+import { deleteTraining } from "../api/trainings";
+import ConfirmDelete from "./ConfirmDelete";
 
 function TrainingList({ trainings, setTrainings, isLoading }) {
+    const [openCreate, setOpenCreate] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [selectedTraining, setSelectedTraining] = useState(null);
+
+    const handleOpenCreate = () => setOpenCreate(true);
+    const handleCloseCreate = () => setOpenCreate(false);
+
+    const handleOpenDelete = (training) => {
+        setSelectedTraining(training);
+        setOpenDelete(true);
+    };
+    const handleCloseDelete = () => setOpenDelete(false);
+
+    const handleConfirmDelete = () => {
+        handleCloseDelete();
+    };
     const [columnDefs, setColumnDefs] = useState([
         {
             field: 'actions',
             cellRenderer: (params) => {
-                const onEdit = () => console.log('Edit', params.data);
-                const onDelete = () => console.log('Delete', params.data);
+                const onDelete = () => handleOpenDelete(params.data);
 
                 return (
-                    <div>
-                        <Button onClick={onEdit} variant="contained" color="warning" sx={{mr: 2}}>
-                            <EditIcon />
-                        </Button>
-                        <Button onClick={onDelete} variant="contained" color="error">
-                            <DeleteIcon />
-                        </Button>
-                    </div>
+                    <Button onClick={onDelete} variant="contained" color="error">
+                        <DeleteIcon />
+                    </Button>
                 )
             },
+            filter: false,
+            sortable: false,
         },
         {
             field: 'customer',
@@ -43,21 +56,31 @@ function TrainingList({ trainings, setTrainings, isLoading }) {
         { field: 'activity', filter: 'agTextColumnFilter', floatingFilter: true },
     ]);
 
-    const [open, setOpen] = useState(false);
-
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
     return (
-        <ListLayout 
-            title="Trainings List" 
+        <ListLayout
+            title="Trainings"
             isLoading={isLoading}
             buttonLabel="Create new training"
-            onButtonClick={handleOpen}
-            dialogTitle="Create new training"
-            dialogOpen={open}
-            handleDialogClose={handleClose}
-            dialogContent={<CreateTrainingForm setTrainings={setTrainings} trainings={trainings} handleClose={handleClose} />}
+            onButtonClick={handleOpenCreate}
+            createDialog={{
+                title: "Create new training",
+                open: openCreate,
+                handleClose: handleCloseCreate,
+                content: <CreateTrainingForm setTrainings={setTrainings} handleClose={handleCloseCreate} />
+            }}
+            deleteDialog={{
+                title: "Delete Training",
+                open: openDelete,
+                handleClose: handleCloseDelete,
+                onConfirm: handleConfirmDelete,
+                content: <ConfirmDelete
+                    handleClose={handleCloseDelete}
+                    item={selectedTraining}
+                    setItems={setTrainings}
+                    deleteItem={deleteTraining}
+                    itemType="training"
+                />
+            }}
             rowData={trainings}
             columnDefs={columnDefs}
         />

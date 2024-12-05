@@ -5,7 +5,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from '@mui/material';
 import EditCustomerForm from './EditCustomerForm';
-import ConfirmCustomerDelete from './ConfirmCustomerDelete';
+import ConfirmDelete from './ConfirmDelete';
+import { deleteCustomer } from '../api/customers';
 
 function CustomerList({ customers, setCustomers, isLoading }) {
     const [openCreate, setOpenCreate] = useState(false);
@@ -18,7 +19,6 @@ function CustomerList({ customers, setCustomers, isLoading }) {
 
     const handleOpenEdit = (customer) => {
         setSelectedCustomer(customer);
-        console.log(customer);
         setOpenEdit(true);
     };
     const handleCloseEdit = () => setOpenEdit(false);
@@ -28,12 +28,6 @@ function CustomerList({ customers, setCustomers, isLoading }) {
         setOpenDelete(true);
     };
     const handleCloseDelete = () => setOpenDelete(false);
-
-    const handleConfirmDelete = () => {
-        // Implement delete functionality
-        console.log('Delete confirmed', selectedCustomer);
-        handleCloseDelete();
-    };
 
     const [columnDefs, setColumnDefs] = useState([
         {
@@ -53,6 +47,8 @@ function CustomerList({ customers, setCustomers, isLoading }) {
                     </div>
                 );
             },
+            filter: false,
+            sortable: false,
         },
         { field: 'firstname', filter: 'agTextColumnFilter', floatingFilter: true },
         { field: 'lastname', filter: 'agTextColumnFilter', floatingFilter: true },
@@ -65,7 +61,7 @@ function CustomerList({ customers, setCustomers, isLoading }) {
 
     return (
         <ListLayout
-            title="Customer List"
+            title="Customer"
             isLoading={isLoading}
             buttonLabel="Create new customer"
             onButtonClick={handleOpenCreate}
@@ -79,14 +75,23 @@ function CustomerList({ customers, setCustomers, isLoading }) {
                 title: "Edit Customer",
                 open: openEdit,
                 handleClose: handleCloseEdit,
-                content: <EditCustomerForm handleClose={handleCloseEdit} customer={selectedCustomer} setCustomers={setCustomers} />
+                content: <EditCustomerForm
+                    handleClose={handleCloseEdit}
+                    customer={selectedCustomer}
+                    setCustomers={setCustomers}
+                />
             }}
             deleteDialog={{
                 title: "Delete Customer",
                 open: openDelete,
                 handleClose: handleCloseDelete,
-                onConfirm: handleConfirmDelete,
-                content: <ConfirmCustomerDelete handleClose={handleCloseDelete} customer={selectedCustomer} setCustomers={setCustomers} />
+                content: <ConfirmDelete
+                    handleClose={handleCloseDelete}
+                    item={selectedCustomer}
+                    setItems={setCustomers}
+                    deleteItem={deleteCustomer}
+                    itemType="customer"
+                />
             }}
             rowData={customers}
             columnDefs={columnDefs}

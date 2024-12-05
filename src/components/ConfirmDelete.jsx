@@ -1,48 +1,53 @@
 import { useState } from 'react';
 import { Button, TextField, DialogActions, Typography } from '@mui/material';
-import { deleteCustomer } from '../api/customers';
 import { useAlert } from './AlertProvider';
 
-function ConfirmCustomerDelete({ handleClose, customer, setCustomers }) {
+function ConfirmDelete({ handleClose, item, setItems, deleteItem, itemType }) {
     const { showAlert } = useAlert();
 
     const [inputValue, setInputValue] = useState('');
     const [error, setError] = useState('');
 
-    const fullName = `${customer?.firstname} ${customer?.lastname}`;
+    const confirmText = itemType === 'customer' ? `${item.firstname} ${item.lastname}` : item.activity;
 
     const handleChange = (e) => {
         setInputValue(e.target.value);
         setError('');
     };
 
+    console.log("item", item);
+
     const handleConfirmClick = async () => {
-        if (inputValue.toLowerCase() === fullName.toLowerCase()) {
-            console.log('Delete confirmed', customer);
+        if (inputValue.toLowerCase() === confirmText.toLowerCase()) {
             try {
-                await deleteCustomer(customer);
-                showAlert(`Customer ${fullName} deleted successfully`, 'success');
-                setCustomers((prev) => prev.filter((c) => c._links.self.href !== customer._links.self.href));
+                if (itemType === 'customer') {
+                    await deleteItem(item);
+                    setItems((prev) => prev.filter((i) => i._links.self.href !== item._links.self.href));
+                } else if (itemType === 'training') {
+                    await deleteItem(item.id);
+                    setItems((prev) => prev.filter((i) => i.id !== item.id));
+                }
+                showAlert(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} deleted successfully`, 'success');
                 handleClose();
             } catch (error) {
                 showAlert(error.message, 'error');
-                return
+                return;
             }
         } else {
-            setError('The name does not match.');
+            setError('The input does not match the required confirmation text.');
         }
     };
 
     return (
         <>
             <Typography variant="body1" gutterBottom>
-                To confirm deletion, please enter the full name of the customer:
+                To confirm deletion, please enter the {itemType === 'customer' ? 'full name of the customer' : 'name of the training\'s activity'}:
             </Typography>
             <Typography variant="h6" gutterBottom>
-                <strong>{fullName}</strong>
+                <strong>{confirmText}</strong>
             </Typography>
             <TextField
-                label="Full Name"
+                label="Confirmation Text"
                 value={inputValue}
                 onChange={handleChange}
                 fullWidth
@@ -58,7 +63,7 @@ function ConfirmCustomerDelete({ handleClose, customer, setCustomers }) {
                 </Button>
             </DialogActions>
         </>
-    )
+    );
 }
 
-export default ConfirmCustomerDelete;
+export default ConfirmDelete;
