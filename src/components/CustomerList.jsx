@@ -5,6 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from '@mui/material';
 import EditCustomerForm from './EditCustomerForm';
+import ConfirmCustomerDelete from './ConfirmCustomerDelete';
 
 function CustomerList({ customers, setCustomers, isLoading }) {
     const [openCreate, setOpenCreate] = useState(false);
@@ -85,7 +86,7 @@ function CustomerList({ customers, setCustomers, isLoading }) {
                 open: openDelete,
                 handleClose: handleCloseDelete,
                 onConfirm: handleConfirmDelete,
-                content: <div>Are you sure you want to delete {selectedCustomer?.firstname} {selectedCustomer?.lastname}?</div>
+                content: <ConfirmCustomerDelete handleClose={handleCloseDelete} customer={selectedCustomer} setCustomers={setCustomers} />
             }}
             rowData={customers}
             columnDefs={columnDefs}
