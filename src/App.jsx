@@ -1,20 +1,64 @@
+import { useEffect, useState } from "react";
+
 import { Routes, Route } from "react-router";
 
-import Dashboard from "./components/Dashboard";
 import CustomerList from "./components/CustomerList";
 import TrainingList from "./components/TrainingList";
 import Navigation from "./components/Navigation";
+import { useAlert } from "./components/AlertProvider";
+
+import { getCustomers } from './api/customers';
+import { getTrainingsWithCustomerInfo } from './api/trainings';
+import { resetDatabase } from "./api/resetdb";
 
 function App() {
+  const { showAlert } = useAlert();
+
+  const [customers, setCustomers] = useState([]);
+  const [trainings, setTrainings] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const customerData = await getCustomers();
+        setCustomers(customerData._embedded.customers);
+
+        const trainingData = await getTrainingsWithCustomerInfo();
+        setTrainings(trainingData);
+      } catch (error) {
+        showAlert(error.message, "error");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, [showAlert]);
+
+  const handleReset = async () => {
+    try {
+      const response = await resetDatabase();
+      showAlert(response, "success");
+      window.location.reload();
+    } catch (error) {
+      showAlert(error.message, "error");
+    }
+  }
+
   return (
-    <div>
-      <Navigation />
+    <>
+      <Navigation handleReset={handleReset} />
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/customers" element={<CustomerList />} />
-        <Route path="/trainings" element={<TrainingList />} />
+        <Route
+          path="/"
+          element={<CustomerList customers={customers} setCustomers={setCustomers} isLoading={isLoading} />}
+        />
+        <Route
+          path="/trainings"
+          element={<TrainingList trainings={trainings} setTrainings={setTrainings} isLoading={isLoading} />}
+        />
       </Routes>
-    </div>
+    </>
   )
 }
 
