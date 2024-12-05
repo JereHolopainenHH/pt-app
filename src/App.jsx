@@ -18,28 +18,30 @@ function App() {
   const [trainings, setTrainings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const customerData = await getCustomers();
-        setCustomers(customerData._embedded.customers);
 
-        const trainingData = await getTrainingsWithCustomerInfo();
-        setTrainings(trainingData);
-      } catch (error) {
-        showAlert(error.message, "error");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  useEffect(() => {
     fetchData();
   }, [showAlert]);
+
+  const fetchData = async () => {
+    try {
+      const customerData = await getCustomers();
+      setCustomers(customerData._embedded.customers);
+
+      const trainingData = await getTrainingsWithCustomerInfo();
+      setTrainings(trainingData);
+    } catch (error) {
+      showAlert(error.message, "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleReset = async () => {
     try {
       const response = await resetDatabase();
       showAlert(response, "success");
-      window.location.reload();
+      fetchData();
     } catch (error) {
       showAlert(error.message, "error");
     }
