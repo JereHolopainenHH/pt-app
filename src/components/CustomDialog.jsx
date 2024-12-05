@@ -1,4 +1,3 @@
-// MaterialUI imports
 import {
     Dialog,
     DialogContent,
@@ -7,7 +6,17 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-function CustomDialog({ children, title, open, handleClose }) {
+/**
+ * CustomDialog component for displaying a dialog with a title and close button.
+ *
+ * @param {Object} props - The component props.
+ * @param {React.ReactNode} props.children - The content to be displayed inside the dialog.
+ * @param {string} props.title - The title of the dialog.
+ * @param {boolean} props.open - Boolean indicating whether the dialog is open.
+ * @param {Function} props.handleClose - Function to close the dialog.
+ * @returns {JSX.Element} The CustomDialog component.
+ */
+export default function CustomDialog({ children, title, open, handleClose }) {
     return (
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>
@@ -30,5 +39,3 @@ function CustomDialog({ children, title, open, handleClose }) {
         </Dialog>
     );
 }
-
-export default CustomDialog;

@@ -5,7 +5,17 @@ import { useAlert } from './AlertProvider';
 import FormFields from './FormFields';
 import { getIdFromHref } from '../utils/getIdFromHref';
 
-function EditCustomerForm({ handleClose, customer, setCustomers, setTrainings }) {
+/**
+ * EditCustomerForm component for editing an existing customer.
+ *
+ * @param {Object} props - The component props.
+ * @param {Function} props.handleClose - Function to close the form.
+ * @param {Object} props.customer - The customer object to be edited.
+ * @param {Function} props.setCustomers - Function to update customers state.
+ * @param {Function} props.setTrainings - Function to update trainings state.
+ * @returns {JSX.Element} The EditCustomerForm component.
+ */
+export default function EditCustomerForm({ handleClose, customer, setCustomers, setTrainings }) {
     const { showAlert } = useAlert();
     const [formData, setFormData] = useState({
         firstname: '',
@@ -65,5 +75,3 @@ function EditCustomerForm({ handleClose, customer, setCustomers, setTrainings })
         </form>
     );
 }
-
-export default EditCustomerForm;

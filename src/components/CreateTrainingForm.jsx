@@ -1,15 +1,31 @@
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
-import { Button, Box, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
+import {
+    Button,
+    Box,
+    InputLabel,
+    MenuItem,
+    FormControl,
+    Select
+} from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { createTraining } from '../api/trainings';
 import { useAlert } from './AlertProvider';
 import { formatTrainingResponse } from '../utils/formatTrainingResponse';
 import FormFields from './FormFields';
 import { getIdFromHref } from '../utils/getIdFromHref';
-import { getCustomerHref } from '../utils/getCustomerHref';
+import { getHref } from '../utils/getHref';
 
-function CreateTrainingForm({ handleClose, setTrainings, customers }) {
+/**
+ * CreateTrainingForm component for creating a new training session.
+ *
+ * @param {Object} props - The component props.
+ * @param {Function} props.handleClose - Function to close the form.
+ * @param {Function} props.setTrainings - Function to update trainings state.
+ * @param {Array} props.customers - Array of customer objects.
+ * @returns {JSX.Element} The CreateTrainingForm component.
+ */
+export default function CreateTrainingForm({ handleClose, setTrainings, customers }) {
     const { showAlert } = useAlert();
     const [selectCustomers, setSelectCustomers] = useState([]);
     const [formData, setFormData] = useState({
@@ -24,7 +40,7 @@ function CreateTrainingForm({ handleClose, setTrainings, customers }) {
             setSelectCustomers(customers);
             setFormData((prev) => ({
                 ...prev,
-                customer: getCustomerHref(customers[0])
+                customer: getHref(customers[0])
             }));
         }
     }, [customers]);
@@ -46,7 +62,7 @@ function CreateTrainingForm({ handleClose, setTrainings, customers }) {
         e.preventDefault();
         try {
             const response = await createTraining(formData);
-            const responseCustomer = customers.find(customer => getIdFromHref(getCustomerHref(customer)) === getIdFromHref(formData.customer));
+            const responseCustomer = customers.find(customer => getIdFromHref(getHref(customer)) === getIdFromHref(formData.customer));
             const formattedResponse = formatTrainingResponse(response, responseCustomer);
             setTrainings((prevTrainings) => [formattedResponse, ...prevTrainings]);
             handleClose();
@@ -75,7 +91,7 @@ function CreateTrainingForm({ handleClose, setTrainings, customers }) {
                         required
                     >
                         {selectCustomers.map(customer =>
-                            <MenuItem key={getCustomerHref(customer)} value={getCustomerHref(customer)}>
+                            <MenuItem key={getHref(customer)} value={getHref(customer)}>
                                 {customer.firstname} {customer.lastname}
                             </MenuItem>)
                         }
@@ -103,5 +119,3 @@ function CreateTrainingForm({ handleClose, setTrainings, customers }) {
         </form>
     );
 }
-
-export default CreateTrainingForm;

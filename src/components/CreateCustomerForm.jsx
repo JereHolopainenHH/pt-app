@@ -4,7 +4,15 @@ import { createCustomer } from '../api/customers';
 import { useAlert } from './AlertProvider';
 import FormFields from './FormFields';
 
-function CreateCustomerForm({ handleClose, setCustomers }) {
+/**
+ * CreateCustomerForm component for creating a new customer.
+ *
+ * @param {Object} props - The component props.
+ * @param {Function} props.handleClose - Function to close the form.
+ * @param {Function} props.setCustomers - Function to update customers state.
+ * @returns {JSX.Element} The CreateCustomerForm component.
+ */
+export default function CreateCustomerForm({ handleClose, setCustomers }) {
     const { showAlert } = useAlert();
 
     const [formData, setFormData] = useState({
@@ -53,5 +61,3 @@ function CreateCustomerForm({ handleClose, setCustomers }) {
         </form>
     );
 }
-
-export default CreateCustomerForm;

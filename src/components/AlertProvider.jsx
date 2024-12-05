@@ -1,14 +1,32 @@
-import { createContext, useContext, useState, useMemo, useCallback } from 'react';
+import { 
+    createContext, 
+    useContext, 
+    useState, 
+    useMemo, 
+    useCallback 
+} from 'react';
 import { Snackbar, Alert } from '@mui/material';
 
 // Create context to manage the alert state
 const AlertContext = createContext();
 
+/**
+ * Custom hook to use the Alert context.
+ *
+ * @returns {Object} The context value containing the showAlert function.
+ */
 export const useAlert = () => {
     return useContext(AlertContext);
 };
 
-function AlertProvider({ children }) {
+/**
+ * AlertProvider component to provide alert context to its children.
+ *
+ * @param {Object} props - The component props.
+ * @param {React.ReactNode} props.children - The children components that will have access to the alert context.
+ * @returns {JSX.Element} The AlertProvider component.
+ */
+export default function AlertProvider({ children }) {
     const [open, setOpen] = useState(false);
     const [message, setMessage] = useState('');
     const [severity, setSeverity] = useState('success'); // 'success' or 'error'
@@ -43,5 +61,3 @@ function AlertProvider({ children }) {
         </AlertContext.Provider>
     );
 };
-
-export default AlertProvider;
