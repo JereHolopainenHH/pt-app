@@ -57,7 +57,7 @@ function App() {
         />
         <Route
           path="/trainings"
-          element={<TrainingList trainings={trainings} setTrainings={setTrainings} isLoading={isLoading} />}
+          element={<TrainingList trainings={trainings} customers={customers} setTrainings={setTrainings} isLoading={isLoading} />}
         />
       </Routes>
     </>

@@ -7,7 +7,7 @@ import { Button } from '@mui/material';
 import { deleteTraining } from "../api/trainings";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 
-function TrainingList({ trainings, setTrainings, isLoading }) {
+function TrainingList({ trainings, customers, setTrainings, isLoading }) {
     const [openCreate, setOpenCreate] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     const [selectedTraining, setSelectedTraining] = useState(null);
@@ -66,7 +66,7 @@ function TrainingList({ trainings, setTrainings, isLoading }) {
                 title: "Create new training",
                 open: openCreate,
                 handleClose: closeCreateDialog,
-                content: <CreateTrainingForm setTrainings={setTrainings} handleClose={closeCreateDialog} trainings={trainings} />
+                content: <CreateTrainingForm setTrainings={setTrainings} handleClose={closeCreateDialog} customers={customers} />
             }}
             deleteDialog={{
                 title: "Delete Training",

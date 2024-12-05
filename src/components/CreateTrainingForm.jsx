@@ -4,12 +4,14 @@ import { Button, Box, InputLabel, MenuItem, FormControl, Select } from '@mui/mat
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { createTraining } from '../api/trainings';
 import { useAlert } from './AlertProvider';
-import { formatCustomerHref, getUniqueCustomersFromTrainings, formatTrainingResponse } from '../utils/trainingUtils';
+import { formatTrainingResponse } from '../utils/formatTrainingResponse';
 import FormFields from './FormFields';
+import { getIdFromHref } from '../utils/getIdFromHref';
+import { getCustomerHref } from '../utils/getCustomerHref';
 
-function CreateTrainingForm({ handleClose, setTrainings, trainings }) {
+function CreateTrainingForm({ handleClose, setTrainings, customers }) {
     const { showAlert } = useAlert();
-    const [customers, setCustomers] = useState([]);
+    const [selectCustomers, setSelectCustomers] = useState([]);
     const [formData, setFormData] = useState({
         date: dayjs(new Date()).toISOString(),
         activity: '',
@@ -18,18 +20,14 @@ function CreateTrainingForm({ handleClose, setTrainings, trainings }) {
     });
 
     useEffect(() => {
-        const fetchUniqueCustomers = () => {
-            const uniqueCustomers = getUniqueCustomersFromTrainings(trainings);
-            setCustomers(uniqueCustomers);
-            if (uniqueCustomers.length > 0) {
-                setFormData((prev) => ({
-                    ...prev,
-                    customer: formatCustomerHref(uniqueCustomers[0].id)
-                }));
-            }
-        };
-        fetchUniqueCustomers();
-    }, [trainings]);
+        if (customers.length > 0) {
+            setSelectCustomers(customers);
+            setFormData((prev) => ({
+                ...prev,
+                customer: getCustomerHref(customers[0])
+            }));
+        }
+    }, [customers]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -48,9 +46,8 @@ function CreateTrainingForm({ handleClose, setTrainings, trainings }) {
         e.preventDefault();
         try {
             const response = await createTraining(formData);
-            const customerId = formData.customer.split('/').pop();
-            const customer = customers.find(customer => customer?.id === parseInt(customerId));
-            const formattedResponse = formatTrainingResponse(response, customer);
+            const responseCustomer = customers.find(customer => getIdFromHref(getCustomerHref(customer)) === getIdFromHref(formData.customer));
+            const formattedResponse = formatTrainingResponse(response, responseCustomer);
             setTrainings((prevTrainings) => [formattedResponse, ...prevTrainings]);
             handleClose();
             showAlert('Training created successfully', 'success');
@@ -77,8 +74,8 @@ function CreateTrainingForm({ handleClose, setTrainings, trainings }) {
                         onChange={handleCustomerChange}
                         required
                     >
-                        {customers.map(customer =>
-                            <MenuItem key={customer.id} value={formatCustomerHref(customer.id)}>
+                        {selectCustomers.map(customer =>
+                            <MenuItem key={getCustomerHref(customer)} value={getCustomerHref(customer)}>
                                 {customer.firstname} {customer.lastname}
                             </MenuItem>)
                         }

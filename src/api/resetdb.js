@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getApiUrl } from '../utils/apiUtils';
+import { getApiUrl } from '../utils/getApiUrl';
 
 /**
  * Resets the database by deleting all data and repopulating it with the original demo data.

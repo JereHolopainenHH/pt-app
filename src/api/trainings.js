@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getApiUrl } from '../utils/apiUtils';
+import { getApiUrl } from '../utils/getApiUrl';
 
 /**
  * Retrieves all training sessions.

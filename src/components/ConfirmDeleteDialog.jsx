@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, TextField, DialogActions, Typography } from '@mui/material';
 import { useAlert } from './AlertProvider';
-import { getIdFromCustomerHref } from '../utils/customerUtils';
+import { getIdFromHref } from '../utils/getIdFromHref';
 
 function ConfirmDeleteDialog({ handleClose, item, setCustomers, setTrainings, deleteItem, itemType }) {
     const { showAlert } = useAlert();
@@ -25,7 +25,7 @@ function ConfirmDeleteDialog({ handleClose, item, setCustomers, setTrainings, de
             try {
                 if (itemType === 'customer') {
                     await deleteItem(item);
-                    const id = getIdFromCustomerHref(item._links.self.href);
+                    const id = getIdFromHref(item._links.self.href);
                     setCustomers((prev) => prev.filter((i) => i._links.self.href !== item._links.self.href));
                     setTrainings((prev) => prev.filter((t) => t.customer.id !== parseInt(id)));
                 } else if (itemType === 'training') {

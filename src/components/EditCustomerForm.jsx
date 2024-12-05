@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 import { editCustomer } from '../api/customers';
 import { useAlert } from './AlertProvider';
 import FormFields from './FormFields';
-import { getIdFromCustomerHref } from '../utils/customerUtils';
+import { getIdFromHref } from '../utils/getIdFromHref';
 
 function EditCustomerForm({ handleClose, customer, setCustomers, setTrainings }) {
     const { showAlert } = useAlert();
@@ -36,7 +36,7 @@ function EditCustomerForm({ handleClose, customer, setCustomers, setTrainings })
             const response = await editCustomer(customer, formData);
             setCustomers((prevCustomers) => prevCustomers.map(c => c._links.self.href === response._links.self.href ? response : c));
             setTrainings((prevTrainings) => prevTrainings.map(t => {
-                const id = parseInt(getIdFromCustomerHref(response._links.self.href));
+                const id = parseInt(getIdFromHref(response._links.self.href));
                 return t.customer.id === id ? { ...t, customer: response } : t
             }));
             handleClose();
