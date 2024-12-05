@@ -13,7 +13,7 @@ import { Typography } from "@mui/material";
 import dayjs from "dayjs";
 
 // api function imports
-import { getTrainings } from "../api/trainings";
+import { getTrainingsWithCustomerInfo } from "../api/trainings";
 
 function TrainingList() {
     const [trainings, setTrainings] = useState([]);
@@ -22,7 +22,7 @@ function TrainingList() {
     useEffect(() => {
         const fetchTrainings = async () => {
             try {
-                const data = await getTrainings();
+                const data = await getTrainingsWithCustomerInfo();
                 setTrainings(data);
             } catch (error) {
                 console.error(error);
