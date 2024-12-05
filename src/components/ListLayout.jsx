@@ -8,10 +8,9 @@ const ListLayout = ({
     isLoading,
     buttonLabel,
     onButtonClick,
-    dialogTitle,
-    dialogOpen,
-    handleDialogClose,
-    dialogContent,
+    createDialog,
+    editDialog,
+    deleteDialog,
     rowData,
     columnDefs,
 }) => {
@@ -25,8 +24,14 @@ const ListLayout = ({
                 <>
                     <Button onClick={onButtonClick} variant='contained' sx={{ mb: 2 }}>{buttonLabel}</Button>
                     <CustomGrid rowData={rowData} columnDefs={columnDefs} />
-                    <CustomDialog title={dialogTitle} open={dialogOpen} handleClose={handleDialogClose}>
-                        {dialogContent}
+                    <CustomDialog title={createDialog.title} open={createDialog.open} handleClose={createDialog.handleClose}>
+                        {createDialog.content}
+                    </CustomDialog>
+                    <CustomDialog title={editDialog.title} open={editDialog.open} handleClose={editDialog.handleClose}>
+                        {editDialog.content}
+                    </CustomDialog>
+                    <CustomDialog title={deleteDialog.title} open={deleteDialog.open} handleClose={deleteDialog.handleClose} onConfirm={deleteDialog.onConfirm}>
+                        {deleteDialog.content}
                     </CustomDialog>
                 </>
             )}

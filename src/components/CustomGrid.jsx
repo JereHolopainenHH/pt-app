@@ -9,6 +9,7 @@ export default function CustomGrid({ rowData, columnDefs }) {
             <AgGridReact
                 rowData={rowData}
                 columnDefs={columnDefs}
+                rowHeight={50}
             />
         </div>
     )

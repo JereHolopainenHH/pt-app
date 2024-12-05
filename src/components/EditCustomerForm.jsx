@@ -1,12 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@mui/material';
-import { createCustomer } from '../api/customers';
+import { editCustomer } from '../api/customers';
 import { useAlert } from './AlertProvider';
 import CustomTextField from './CustomTextField';
 
-function CreateCustomerForm({ handleClose, setCustomers }) {
+function EditCustomerForm({ handleClose, customer, setCustomers }) {
     const { showAlert } = useAlert();
-
     const [formData, setFormData] = useState({
         firstname: '',
         lastname: '',
@@ -17,6 +16,12 @@ function CreateCustomerForm({ handleClose, setCustomers }) {
         city: ''
     });
 
+    useEffect(() => {
+        if (customer) {
+            setFormData(customer);
+        }
+    }, [customer]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -25,10 +30,15 @@ function CreateCustomerForm({ handleClose, setCustomers }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await createCustomer(formData);
-            setCustomers((prevCustomers) => [response, ...prevCustomers]);
+            if(JSON.stringify(customer) === JSON.stringify(formData)){
+                showAlert('No changes made', 'info');
+                return;
+            }
+            const response = await editCustomer(customer, formData);
+            console.log(response);
+            setCustomers((prevCustomers) => prevCustomers.map(c => c._links.self.href === response._links.self.href ? response : c));
             handleClose();
-            showAlert('Customer created successfully', 'success');
+            showAlert('Customer updated successfully', 'success');
         } catch (error) {
             showAlert(error.message, 'error');
         }
@@ -52,15 +62,15 @@ function CreateCustomerForm({ handleClose, setCustomers }) {
                     label={field.label}
                     name={field.name}
                     type={field.type || 'text'}
-                    value={formData[field.name]}
+                    value={formData[field.name] || ''}
                     onChange={handleChange}
                 />
             ))}
             <Button type="submit" variant="contained" color="primary">
-                Create
+                Edit
             </Button>
         </form>
     );
 }
 
-export default CreateCustomerForm;
+export default EditCustomerForm;

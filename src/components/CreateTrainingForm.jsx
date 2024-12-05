@@ -52,7 +52,7 @@ function CreateTrainingForm({ handleClose, setTrainings, trainings }) {
             const customerId = training.customerHref.split('/').pop();
             const customer = customers.find(customer => customer.id === parseInt(customerId));
             const formattedResponse = formatTrainingResponse(response, customer);
-            setTrainings((prevTrainings) => [...prevTrainings, formattedResponse]);
+            setTrainings((prevTrainings) => [formattedResponse, ...prevTrainings]);
             handleClose();
             showAlert('Training created successfully', 'success');
         } catch (error) {

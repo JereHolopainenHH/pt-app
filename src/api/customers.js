@@ -63,14 +63,14 @@ export const createCustomer = async (customer) => {
  * Updates an existing customer's details.
  *
  * @param {Object} customer - The customer object containing the '_links.self.href' for identifying the customer to be updated.
- * @param {Object} updatedCustomer - The customer object containing the fields to be updated.
- * @returns {Promise<Object>} A promise that resolves to the updated customer object.
+ * @param {Object} formData - The updated customer details.
+ * @returns {Promise<Object>} A promise that resolves to the edited customer object.
  * For detailed request and response structure, see the documentation.
  * @see https://juhahinkula.github.io/personaltrainerdocs/customers/
  */
-export const updateCustomer = async (customer, updatedCustomer) => {
+export const editCustomer = async (customer, formData) => {
     try {
-        const response = await axios.put(customer._links.self.href, updatedCustomer, {
+        const response = await axios.put(customer._links.self.href, formData, {
             headers: {
                 'Content-Type': 'application/json'
             }
