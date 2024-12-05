@@ -17,9 +17,15 @@ function EditCustomerForm({ handleClose, customer, setCustomers }) {
     });
 
     useEffect(() => {
-        if (customer) {
-            setFormData(customer);
-        }
+        setFormData({
+            firstname: customer.firstname,
+            lastname: customer.lastname,
+            email: customer.email,
+            phone: customer.phone,
+            streetaddress: customer.streetaddress,
+            postcode: customer.postcode,
+            city: customer.city
+        });
     }, [customer]);
 
     const handleChange = (e) => {
@@ -30,12 +36,11 @@ function EditCustomerForm({ handleClose, customer, setCustomers }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            if(JSON.stringify(customer) === JSON.stringify(formData)){
+            if (JSON.stringify(customer) === JSON.stringify(formData)) {
                 showAlert('No changes made', 'info');
                 return;
             }
             const response = await editCustomer(customer, formData);
-            console.log(response);
             setCustomers((prevCustomers) => prevCustomers.map(c => c._links.self.href === response._links.self.href ? response : c));
             handleClose();
             showAlert('Customer updated successfully', 'success');
@@ -64,6 +69,7 @@ function EditCustomerForm({ handleClose, customer, setCustomers }) {
                     type={field.type || 'text'}
                     value={formData[field.name] || ''}
                     onChange={handleChange}
+                    required={false}
                 />
             ))}
             <Button type="submit" variant="contained" color="primary">

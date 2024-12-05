@@ -27,9 +27,13 @@ const ListLayout = ({
                     <CustomDialog title={createDialog.title} open={createDialog.open} handleClose={createDialog.handleClose}>
                         {createDialog.content}
                     </CustomDialog>
-                    <CustomDialog title={editDialog.title} open={editDialog.open} handleClose={editDialog.handleClose}>
-                        {editDialog.content}
-                    </CustomDialog>
+                    {
+                        editDialog && (
+                            <CustomDialog title={editDialog.title} open={editDialog.open} handleClose={editDialog.handleClose}>
+                                {editDialog.content}
+                            </CustomDialog>
+                        )
+                    }
                     <CustomDialog title={deleteDialog.title} open={deleteDialog.open} handleClose={deleteDialog.handleClose} onConfirm={deleteDialog.onConfirm}>
                         {deleteDialog.content}
                     </CustomDialog>
