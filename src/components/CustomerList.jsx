@@ -60,18 +60,18 @@ export default function CustomerList({ customers, setCustomers, setTrainings, is
             filter: false,
             sortable: false,
         },
-        { field: 'firstname', filter: 'agTextColumnFilter', floatingFilter: true },
-        { field: 'lastname', filter: 'agTextColumnFilter', floatingFilter: true },
-        { field: 'streetaddress', filter: 'agTextColumnFilter', floatingFilter: true },
-        { field: 'postcode', filter: 'agTextColumnFilter', floatingFilter: true },
-        { field: 'city', filter: 'agTextColumnFilter', floatingFilter: true },
-        { field: 'email', filter: 'agTextColumnFilter', floatingFilter: true },
-        { field: 'phone', filter: 'agTextColumnFilter', floatingFilter: true }
+        { field: 'firstname', filter: 'agTextColumnFilter', floatingFilter: true, },
+        { field: 'lastname', filter: 'agTextColumnFilter', floatingFilter: true, },
+        { field: 'streetaddress', filter: 'agTextColumnFilter', floatingFilter: true, },
+        { field: 'postcode', filter: 'agTextColumnFilter', floatingFilter: true, },
+        { field: 'city', filter: 'agTextColumnFilter', floatingFilter: true, },
+        { field: 'email', filter: 'agTextColumnFilter', floatingFilter: true, },
+        { field: 'phone', filter: 'agTextColumnFilter', floatingFilter: true, }
     ]);
 
     return (
         <ListLayout
-            title="Customer"
+            title="Customers"
             isLoading={isLoading}
             buttonLabel="Create new customer"
             onButtonClick={handleOpenCreate}

@@ -30,7 +30,7 @@ export default function ListLayout({
     columnDefs,
 }) {
     return (
-        <Container sx={{ mt: "80px" }}>
+        <Container sx={{ mt: "80px" }} maxWidth="xl">
             <Typography variant="h4" sx={{ my: 2 }}>
                 {title}
             </Typography>

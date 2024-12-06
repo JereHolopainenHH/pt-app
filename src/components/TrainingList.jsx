@@ -61,9 +61,23 @@ export default function TrainingList({ trainings, customers, setTrainings, isLoa
             filter: 'agDateColumnFilter',
             floatingFilter: true,
             valueFormatter: (data) => dayjs(data.value).format('DD/MM/YYYY HH:mm'),
+            filterParams: {
+                comparator: (filterLocalDateAtMidnight, cellValue) => {
+                    const cellDate = dayjs(cellValue).startOf('day').toDate();
+                    if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
+                        return 0;
+                    }
+                    if (cellDate < filterLocalDateAtMidnight) {
+                        return -1;
+                    }
+                    if (cellDate > filterLocalDateAtMidnight) {
+                        return 1;
+                    }
+                }
+            },
         },
         { field: 'duration', cellDataType: 'number', filter: 'agNumberColumnFilter', floatingFilter: true },
-        { field: 'activity', filter: 'agTextColumnFilter', floatingFilter: true },
+        { field: 'activity', filter: 'agTextColumnFilter', floatingFilter: true, flex: 1 },
     ]);
 
     return (

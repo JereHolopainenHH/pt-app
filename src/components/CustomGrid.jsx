@@ -13,7 +13,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
  */
 export default function CustomGrid({ rowData, columnDefs }) {
     return (
-        <div className="ag-theme-alpine" style={{ height: 400, width: '100%' }}>
+        <div className="ag-theme-alpine" style={{height: "80vh"}}>
             <AgGridReact
                 rowData={rowData}
                 columnDefs={columnDefs}
