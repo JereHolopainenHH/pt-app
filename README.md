@@ -49,3 +49,9 @@ Toiminnallisuudet:
 - Listakirjasto [AG Grid](https://www.ag-grid.com/react-data-grid/getting-started/)
   - [AgGridReact](https://www.ag-grid.com/react-data-grid/getting-started/#your-first-react-data-grid)
   - [AG Theme Alpine](https://www.ag-grid.com/example/?theme=ag-theme-alpine)
+
+### Käyttö
+  1. git clone https://github.com/JereHolopainenHH/pt-app.git
+  2. cd pt-app
+  3. npm install
+  4. npm run dev
